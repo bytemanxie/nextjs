@@ -23,9 +23,9 @@ export default function Home() {
             探索 Next.js 15 的各种渲染模式和 API 功能
           </p>
           <div className="flex justify-center gap-2 mt-4">
-            <Badge variant="secondary">Next.js 15</Badge>
+            <Badge variant="destructive">Next.js 15</Badge>
             <Badge variant="secondary">Tailwind CSS</Badge>
-            <Badge variant="secondary">shadcn/ui</Badge>
+            <Badge variant="outline">shadcn/ui</Badge>
           </div>
         </header>
 
@@ -36,7 +36,9 @@ export default function Home() {
               <div className="bg-green-100 dark:bg-green-900 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
                 <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
               </div>
-              <CardTitle className="text-xl">SSR (服务器端渲染)</CardTitle>
+              <CardTitle className="text-xl text-green-600">
+                SSR (服务器端渲染)
+              </CardTitle>
               <CardDescription>
                 服务器端渲染，每次请求都在服务器上生成页面内容
               </CardDescription>
