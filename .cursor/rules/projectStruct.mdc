@@ -1,0 +1,276 @@
+---
+alwaysApply: true
+---
+
+# Next.js API 学习项目 - Cursor 规则
+
+## 项目概述
+这是一个用于学习 Next.js 15 API、Tailwind CSS 和 shadcn/ui 的项目。
+
+## 技术栈
+- **框架**: Next.js 15 (App Router)
+- **样式**: Tailwind CSS 4
+- **UI 组件**: shadcn/ui
+- **包管理器**: pnpm
+- **语言**: TypeScript
+
+## 项目结构
+```
+src/
+├── app/                 # Next.js App Router 页面
+│   ├── layout.tsx      # 根布局
+│   ├── page.tsx        # 首页
+│   ├── globals.css     # 全局样式
+│   ├── ssr/            # SSR 示例页面
+│   ├── ssg/            # SSG 示例页面
+│   └── isr/            # ISR 示例页面
+├── components/          # shadcn/ui 组件
+└── lib/                # 工具函数
+    └── utils.ts        # 通用工具函数
+```
+
+## 开发规范
+
+### 1. 组件开发
+- 使用 shadcn/ui 组件作为基础
+- 所有自定义组件放在 `src/components/` 目录
+- 组件使用 TypeScript 和 React 函数组件
+- 使用 `cn()` 函数合并 Tailwind 类名
+
+### 2. 样式规范
+- 优先使用 Tailwind CSS 类名
+- 使用 shadcn/ui 的设计系统颜色变量
+- 支持深色模式，使用 CSS 变量
+- 响应式设计优先
+
+### 3. 文件命名
+- 组件文件使用 PascalCase: `Button.tsx`
+- 页面文件使用 kebab-case: `page.tsx`
+- 工具文件使用 camelCase: `utils.ts`
+
+### 4. 导入规范
+- 使用绝对路径导入: `@/components/Button`
+- 按以下顺序组织导入:
+  1. React 相关
+  2. Next.js 相关
+  3. 第三方库
+  4. 本地组件和工具
+
+### 5. 代码质量
+- 使用 TypeScript 严格模式
+- 遵循 ESLint 规则
+- 组件要有清晰的 props 类型定义
+- 使用有意义的变量和函数名
+
+## shadcn/ui 使用指南
+
+### 添加新组件
+```bash
+npx shadcn@latest add [component-name]
+```
+
+### 常用组件
+- Button: 按钮组件
+- Card: 卡片容器
+- Input: 输入框
+- Label: 标签
+- Badge: 徽章
+- Alert: 警告提示
+- Dialog: 对话框
+- Sheet: 侧边栏
+- Tabs: 标签页
+- Accordion: 手风琴
+
+### 组件使用示例
+```tsx
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export function MyComponent() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>标题</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button variant="default">按钮</Button>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+## Next.js 学习重点
+
+### 1. 渲染模式
+- **SSR (Server-Side Rendering)**: 服务器端渲染
+- **SSG (Static Site Generation)**: 静态站点生成
+- **ISR (Incremental Static Regeneration)**: 增量静态再生
+
+### 2. API 路由
+- 学习 API 路由的使用
+- 理解不同 HTTP 方法的处理
+- 掌握中间件的使用
+
+### 3. 数据获取
+- `fetch()` API 的使用
+- 缓存策略
+- 重新验证机制
+
+## 开发命令
+```bash
+# 开发服务器
+pnpm dev
+
+# 构建项目
+pnpm build
+
+# 启动生产服务器
+pnpm start
+
+# 代码检查
+pnpm lint
+```
+
+## 注意事项
+1. 这是一个学习项目，重点是理解概念而非生产就绪
+2. 每个页面都应该有清晰的注释说明其渲染模式
+3. 使用 shadcn/ui 组件保持 UI 一致性
+4. 遵循 Next.js 15 的最佳实践
+5. 保持代码简洁和可读性
+# Next.js API 学习项目 - Cursor 规则
+
+## 项目概述
+这是一个用于学习 Next.js 15 API、Tailwind CSS 和 shadcn/ui 的项目。
+
+## 技术栈
+- **框架**: Next.js 15 (App Router)
+- **样式**: Tailwind CSS 4
+- **UI 组件**: shadcn/ui
+- **包管理器**: pnpm
+- **语言**: TypeScript
+
+## 项目结构
+```
+src/
+├── app/                 # Next.js App Router 页面
+│   ├── layout.tsx      # 根布局
+│   ├── page.tsx        # 首页
+│   ├── globals.css     # 全局样式
+│   ├── ssr/            # SSR 示例页面
+│   ├── ssg/            # SSG 示例页面
+│   └── isr/            # ISR 示例页面
+├── components/          # shadcn/ui 组件
+└── lib/                # 工具函数
+    └── utils.ts        # 通用工具函数
+```
+
+## 开发规范
+
+### 1. 组件开发
+- 使用 shadcn/ui 组件作为基础
+- 所有自定义组件放在 `src/components/` 目录
+- 组件使用 TypeScript 和 React 函数组件
+- 使用 `cn()` 函数合并 Tailwind 类名
+
+### 2. 样式规范
+- 优先使用 Tailwind CSS 类名
+- 使用 shadcn/ui 的设计系统颜色变量
+- 支持深色模式，使用 CSS 变量
+- 响应式设计优先
+
+### 3. 文件命名
+- 组件文件使用 PascalCase: `Button.tsx`
+- 页面文件使用 kebab-case: `page.tsx`
+- 工具文件使用 camelCase: `utils.ts`
+
+### 4. 导入规范
+- 使用绝对路径导入: `@/components/Button`
+- 按以下顺序组织导入:
+  1. React 相关
+  2. Next.js 相关
+  3. 第三方库
+  4. 本地组件和工具
+
+### 5. 代码质量
+- 使用 TypeScript 严格模式
+- 遵循 ESLint 规则
+- 组件要有清晰的 props 类型定义
+- 使用有意义的变量和函数名
+
+## shadcn/ui 使用指南
+
+### 添加新组件
+```bash
+npx shadcn@latest add [component-name]
+```
+
+### 常用组件
+- Button: 按钮组件
+- Card: 卡片容器
+- Input: 输入框
+- Label: 标签
+- Badge: 徽章
+- Alert: 警告提示
+- Dialog: 对话框
+- Sheet: 侧边栏
+- Tabs: 标签页
+- Accordion: 手风琴
+
+### 组件使用示例
+```tsx
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export function MyComponent() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>标题</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Button variant="default">按钮</Button>
+      </CardContent>
+    </Card>
+  )
+}
+```
+
+## Next.js 学习重点
+
+### 1. 渲染模式
+- **SSR (Server-Side Rendering)**: 服务器端渲染
+- **SSG (Static Site Generation)**: 静态站点生成
+- **ISR (Incremental Static Regeneration)**: 增量静态再生
+
+### 2. API 路由
+- 学习 API 路由的使用
+- 理解不同 HTTP 方法的处理
+- 掌握中间件的使用
+
+### 3. 数据获取
+- `fetch()` API 的使用
+- 缓存策略
+- 重新验证机制
+
+## 开发命令
+```bash
+# 开发服务器
+pnpm dev
+
+# 构建项目
+pnpm build
+
+# 启动生产服务器
+pnpm start
+
+# 代码检查
+pnpm lint
+```
+
+## 注意事项
+1. 这是一个学习项目，重点是理解概念而非生产就绪
+2. 每个页面都应该有清晰的注释说明其渲染模式
+3. 使用 shadcn/ui 组件保持 UI 一致性
+4. 遵循 Next.js 15 的最佳实践
+5. 保持代码简洁和可读性
