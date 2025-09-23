@@ -41,6 +41,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^16.2.0",
     "prettier": "^3.6.2",
+    "shadcn": "^3.3.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
