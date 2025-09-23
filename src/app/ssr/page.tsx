@@ -1,4 +1,14 @@
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Separator, RefreshButton } from '@/features/ssr';
 
 // 模拟获取服务器端数据的函数
 async function getServerData() {
@@ -28,165 +38,245 @@ export default async function SSRPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 dark:from-slate-900 dark:to-slate-800">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <Link
-            href="/"
-            className="inline-flex items-center text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-200"
-          >
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            返回首页
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/" className="inline-flex items-center">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              返回首页
+            </Link>
+          </Button>
         </div>
 
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             SSR (服务器端渲染) 示例
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-lg text-muted-foreground">
             每次刷新页面都会在服务器端重新生成内容
           </p>
+          <Badge variant="secondary" className="mt-4">
+            服务器端渲染
+          </Badge>
         </header>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* 实时数据卡片 */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-              <svg
-                className="w-6 h-6 mr-2 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              实时数据
-            </h2>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  生成时间:
-                </span>
-                <span className="font-mono text-green-600 dark:text-green-400">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <svg
+                  className="w-6 h-6 mr-2 text-green-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                实时数据
+              </CardTitle>
+              <CardDescription>{data.randomData.message}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">生成时间:</span>
+                <Badge variant="outline" className="font-mono">
                   {data.timestamp}
-                </span>
+                </Badge>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  随机ID:
-                </span>
-                <span className="font-mono text-green-600 dark:text-green-400">
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">随机ID:</span>
+                <Badge variant="secondary" className="font-mono">
                   {data.randomData.id}
-                </span>
+                </Badge>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">天气:</span>
-                <span className="font-mono text-green-600 dark:text-green-400">
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">天气:</span>
+                <Badge
+                  variant={
+                    data.randomData.weather === '晴天' ? 'default' : 'secondary'
+                  }
+                  className="font-mono"
+                >
                   {data.randomData.weather}
-                </span>
+                </Badge>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* 服务器信息卡片 */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-              <svg
-                className="w-6 h-6 mr-2 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
-                />
-              </svg>
-              服务器信息
-            </h2>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  Node.js 版本:
-                </span>
-                <span className="font-mono text-blue-600 dark:text-blue-400">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <svg
+                  className="w-6 h-6 mr-2 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+                  />
+                </svg>
+                服务器信息
+              </CardTitle>
+              <CardDescription>当前服务器的运行环境信息</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">Node.js 版本:</span>
+                <Badge variant="outline" className="font-mono">
                   {data.serverInfo.node_version}
-                </span>
+                </Badge>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">平台:</span>
-                <span className="font-mono text-blue-600 dark:text-blue-400">
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">平台:</span>
+                <Badge variant="secondary" className="font-mono">
                   {data.serverInfo.platform}
-                </span>
+                </Badge>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  内存使用:
-                </span>
-                <span className="font-mono text-blue-600 dark:text-blue-400">
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">内存使用:</span>
+                <Badge
+                  variant={
+                    data.serverInfo.memory_usage > 50
+                      ? 'destructive'
+                      : 'default'
+                  }
+                  className="font-mono"
+                >
                   {data.serverInfo.memory_usage} MB
-                </span>
+                </Badge>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* 特性说明 */}
-        <div className="mt-8 bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
-            SSR 特性说明
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <h3 className="font-semibold text-green-600 dark:text-green-400 mb-2">
-                优势:
-              </h3>
-              <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1">
-                <li>SEO 友好，搜索引擎可以直接索引内容</li>
-                <li>首屏加载快，用户能立即看到内容</li>
-                <li>可以处理实时数据和用户特定内容</li>
-                <li>支持动态路由和个性化内容</li>
-              </ul>
+        <Card className="mt-8 max-w-4xl mx-auto">
+          <CardHeader>
+            <CardTitle>SSR 特性说明</CardTitle>
+            <CardDescription>了解服务器端渲染的优势和注意事项</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="font-semibold text-green-600 dark:text-green-400 mb-3 flex items-center">
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  优势
+                </h3>
+                <div className="space-y-2">
+                  <Badge
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                  >
+                    SEO 友好，搜索引擎可以直接索引内容
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                  >
+                    首屏加载快，用户能立即看到内容
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                  >
+                    可以处理实时数据和用户特定内容
+                  </Badge>
+                  <Badge
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                  >
+                    支持动态路由和个性化内容
+                  </Badge>
+                </div>
+              </div>
+              <div>
+                <h3 className="font-semibold text-amber-600 dark:text-amber-400 mb-3 flex items-center">
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 15.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                  注意事项
+                </h3>
+                <div className="space-y-2">
+                  <Badge
+                    variant="secondary"
+                    className="w-full justify-start text-left"
+                  >
+                    服务器负载较高，每次请求都需要渲染
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="w-full justify-start text-left"
+                  >
+                    TTFB (Time To First Byte) 可能较长
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="w-full justify-start text-left"
+                  >
+                    需要服务器运行环境
+                  </Badge>
+                  <Badge
+                    variant="secondary"
+                    className="w-full justify-start text-left"
+                  >
+                    缓存策略需要额外考虑
+                  </Badge>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-red-600 dark:text-red-400 mb-2">
-                注意事项:
-              </h3>
-              <ul className="list-disc list-inside text-gray-600 dark:text-gray-300 space-y-1">
-                <li>服务器负载较高，每次请求都需要渲染</li>
-                <li>TTFB (Time To First Byte) 可能较长</li>
-                <li>需要服务器运行环境</li>
-                <li>缓存策略需要额外考虑</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* 刷新按钮 */}
         <div className="text-center mt-8">
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors"
-          >
-            刷新页面查看新数据
-          </button>
+          <RefreshButton />
         </div>
       </div>
     </div>
