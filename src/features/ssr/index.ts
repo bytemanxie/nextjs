@@ -5,3 +5,4 @@
 
 export { RefreshButton } from './RefreshButton';
 export { Separator } from './Separator';
+export { default as LazyLoadedComponent } from './LazyLoadedComponent';

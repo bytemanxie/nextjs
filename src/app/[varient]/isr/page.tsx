@@ -60,7 +60,11 @@ async function getISRData() {
   };
 }
 
-export default async function ISRPage() {
+interface ISRPageProps {
+  params: Promise<{ varient: string }>;
+}
+
+export default async function ISRPage({ params }: ISRPageProps) {
   // 这些数据会根据 revalidate 设置定期更新
   const data = await getISRData();
 
@@ -72,6 +76,7 @@ export default async function ISRPage() {
         badgeText="增量静态再生"
         gradientFrom="from-purple-50"
         gradientTo="to-pink-100"
+        params={params}
       />
 
       {/* 更新时间信息 */}

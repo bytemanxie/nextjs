@@ -46,7 +46,11 @@ async function getStaticData() {
   };
 }
 
-export default async function SSGPage() {
+interface SSGPageProps {
+  params?: Promise<{ varient: string }>;
+}
+
+export default async function SSGPage({}: SSGPageProps) {
   // 这些数据在构建时生成
   const data = await getStaticData();
 

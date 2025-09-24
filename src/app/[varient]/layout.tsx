@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 
 interface VarientLayoutProps {
   children: React.ReactNode;
+  params: Promise<{ varient: string }>;
 }
 
 interface PageHeaderProps {
@@ -11,19 +12,23 @@ interface PageHeaderProps {
   badgeText: string;
   gradientFrom: string;
   gradientTo: string;
+  params?: Promise<{ varient: string }>;
 }
 
 /**
  * 页面头部组件
  * 为 SSR、SSG、ISR 页面提供统一的头部样式
  */
-function PageHeader({
+async function PageHeader({
   title,
   description,
   badgeText,
   gradientFrom,
   gradientTo,
+  params,
 }: PageHeaderProps) {
+  const varient = (await params)?.varient;
+  console.log('varient', varient);
   return (
     <header className={cn('text-center mb-8', gradientFrom, gradientTo)}>
       <h1 className="text-4xl font-bold text-foreground mb-4">{title}</h1>
@@ -61,7 +66,15 @@ function PageContainer({
  * (varient) 路由组的公共布局
  * 为 SSR、SSG、ISR 示例页面提供基础布局结构
  */
-export default function VarientLayout({ children }: VarientLayoutProps) {
+export default async function VarientLayout({
+  children,
+  params,
+}: VarientLayoutProps) {
+  const { varient } = await params;
+
+  // 可以根据 varient 值设置不同的布局配置
+  console.log('Layout 获取到的 varient:', varient);
+
   return <>{children}</>;
 }
 

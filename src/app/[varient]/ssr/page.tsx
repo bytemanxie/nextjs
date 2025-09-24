@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import {
   Card,
   CardContent,
@@ -8,6 +9,11 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Separator, RefreshButton } from '@/features/ssr';
 import { PageHeader, PageContainer } from '../layout';
+
+// 使用 React.lazy() 动态导入组件
+const LazyLoadedComponent = lazy(
+  () => import('@/features/ssr/LazyLoadedComponent')
+);
 
 // 模拟获取服务器端数据的函数
 async function getServerData() {
@@ -29,7 +35,11 @@ async function getServerData() {
   };
 }
 
-export default async function SSRPage() {
+interface SSRPageProps {
+  params: Promise<{ varient: string }>;
+}
+
+export default async function SSRPage({ params }: SSRPageProps) {
   // 在每次请求时获取数据
   const data = await getServerData();
 
@@ -41,6 +51,7 @@ export default async function SSRPage() {
         badgeText="服务器端渲染"
         gradientFrom="from-green-50"
         gradientTo="to-emerald-100"
+        params={params}
       />
 
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -145,6 +156,44 @@ export default async function SSRPage() {
         </Card>
       </div>
 
+      {/* 懒加载组件演示 - 使用 React.lazy() */}
+      <div className="mt-8 max-w-4xl mx-auto">
+        <Suspense
+          fallback={
+            <Card className="w-full">
+              <CardContent className="flex items-center justify-center py-8">
+                <div className="flex items-center space-x-2">
+                  <svg
+                    className="w-5 h-5 animate-spin text-indigo-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span className="text-muted-foreground">
+                    正在加载懒加载组件...
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          }
+        >
+          <LazyLoadedComponent />
+        </Suspense>
+      </div>
+
       {/* 特性说明 */}
       <Card className="mt-8 max-w-4xl mx-auto">
         <CardHeader>
@@ -244,7 +293,6 @@ export default async function SSRPage() {
           </div>
         </CardContent>
       </Card>
-
       {/* 刷新按钮 */}
       <div className="text-center mt-8">
         <RefreshButton />

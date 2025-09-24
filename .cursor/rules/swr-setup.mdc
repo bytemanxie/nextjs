@@ -1,0 +1,373 @@
+# SWR 数据获取配置指南
+
+本文档详细说明如何使用 SWR 进行数据获取，包括三种不同的实例配置。
+
+## 1. SWR 简介
+
+SWR 是一个用于数据获取的 React Hooks 库，具有以下特性：
+
+- **轻量级**: 体积小，性能优秀
+- **智能缓存**: 自动缓存和去重
+- **实时更新**: 支持焦点重新验证
+- **错误重试**: 自动错误重试机制
+- **TypeScript 支持**: 完整的类型定义
+
+## 2. 三种 SWR 实例
+
+### 2.1 缓存实例 (SWRInstances.cache)
+
+**适用场景**: 静态数据、用户信息、配置数据等不经常变化的数据
+
+```typescript
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+// 方式1: 直接使用预定义实例
+function App({ children }) {
+  return (
+    <SWRConfig value={SWRInstances.cache}>
+      {children}
+    </SWRConfig>
+  );
+}
+
+// 方式2: 使用工厂函数
+import { createSWRInstance } from '@/lib/swr';
+const config = createSWRInstance('cache');
+```
+
+**配置特点**:
+
+- `revalidateOnFocus: false` - 窗口获得焦点时不重新验证
+- `revalidateOnReconnect: false` - 网络重连时不重新验证
+- `revalidateIfStale: false` - 数据过期时不重新验证
+- `dedupingInterval: 60000` - 1分钟去重
+- `errorRetryCount: 2` - 错误重试2次
+
+**使用示例**:
+
+```typescript
+import useSWR from 'swr';
+
+function UserProfile({ userId }) {
+  const { data, error, isLoading } = useSWR(`/api/users/${userId}`);
+
+  if (isLoading) return <div>加载中...</div>;
+  if (error) return <div>加载失败</div>;
+
+  return <div>{data.name}</div>;
+}
+```
+
+### 2.2 无缓存实例 (SWRInstances.realtime)
+
+**适用场景**: 实时数据、搜索结果、动态内容等需要最新数据的情况
+
+```typescript
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+// 方式1: 直接使用预定义实例
+function App({ children }) {
+  return (
+    <SWRConfig value={SWRInstances.realtime}>
+      {children}
+    </SWRConfig>
+  );
+}
+
+// 方式2: 使用工厂函数
+import { createSWRInstance } from '@/lib/swr';
+const config = createSWRInstance('no-cache');
+```
+
+**配置特点**:
+
+- `revalidateOnFocus: true` - 窗口获得焦点时重新验证
+- `revalidateOnReconnect: true` - 网络重连时重新验证
+- `revalidateIfStale: true` - 数据过期时重新验证
+- `dedupingInterval: 0` - 不去重，每次都请求
+- `errorRetryCount: 1` - 错误重试1次
+
+**使用示例**:
+
+```typescript
+import useSWR from 'swr';
+
+function SearchResults({ query }) {
+  const { data, error, isLoading } = useSWR(
+    query ? `/api/search?q=${query}` : null
+  );
+
+  if (isLoading) return <div>搜索中...</div>;
+  if (error) return <div>搜索失败</div>;
+
+  return (
+    <div>
+      {data?.results.map(item => (
+        <div key={item.id}>{item.title}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+### 2.3 定时轮询实例 (SWRInstances.polling)
+
+**适用场景**: 实时监控数据、股票价格、在线状态等需要定期更新的数据
+
+```typescript
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+// 方式1: 直接使用预定义实例
+function App({ children }) {
+  return (
+    <SWRConfig value={SWRInstances.polling}>
+      {children}
+    </SWRConfig>
+  );
+}
+
+// 方式2: 使用工厂函数
+import { createSWRInstance } from '@/lib/swr';
+const config = createSWRInstance('polling');
+```
+
+**配置特点**:
+
+- `refreshInterval: 5000` - 5秒自动刷新
+- `revalidateOnFocus: true` - 窗口获得焦点时重新验证
+- `revalidateOnReconnect: true` - 网络重连时重新验证
+- `dedupingInterval: 1000` - 1秒去重
+- `errorRetryCount: 3` - 错误重试3次
+
+**使用示例**:
+
+```typescript
+import useSWR from 'swr';
+
+function LiveStats() {
+  const { data, error, isLoading } = useSWR('/api/stats');
+
+  if (isLoading) return <div>加载中...</div>;
+  if (error) return <div>加载失败</div>;
+
+  return (
+    <div>
+      <h3>实时统计</h3>
+      <p>在线用户: {data.onlineUsers}</p>
+      <p>总访问量: {data.totalVisits}</p>
+    </div>
+  );
+}
+```
+
+## 3. 使用方式
+
+### 3.1 全局配置
+
+在应用根组件中配置 SWR：
+
+```typescript
+// src/app/layout.tsx
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <SWRConfig value={SWRInstances.cache}>
+          {children}
+        </SWRConfig>
+      </body>
+    </html>
+  );
+}
+```
+
+### 3.2 三种实例的导出方式
+
+```typescript
+import {
+  SWRInstances,           // 预定义实例对象
+  createSWRInstance,      // 工厂函数
+  swrCacheConfig,         // 直接导出
+  swrNoCacheConfig,       // 直接导出
+  swrPollingConfig        // 直接导出
+} from '@/lib/swr';
+
+// 方式1: 使用预定义实例对象
+<SWRConfig value={SWRInstances.cache}>
+<SWRConfig value={SWRInstances.realtime}>
+<SWRConfig value={SWRInstances.polling}>
+
+// 方式2: 使用工厂函数
+<SWRConfig value={createSWRInstance('cache')}>
+<SWRConfig value={createSWRInstance('no-cache')}>
+<SWRConfig value={createSWRInstance('polling')}>
+
+// 方式3: 直接使用配置
+<SWRConfig value={swrCacheConfig}>
+<SWRConfig value={swrNoCacheConfig}>
+<SWRConfig value={swrPollingConfig}>
+```
+
+### 3.3 局部配置
+
+在特定组件中使用不同的配置：
+
+```typescript
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+function LiveDataComponent() {
+  return (
+    <SWRConfig value={SWRInstances.polling}>
+      <LiveStats />
+    </SWRConfig>
+  );
+}
+```
+
+### 3.4 动态配置
+
+根据条件动态选择配置：
+
+```typescript
+import { createSWRInstance } from '@/lib/swr';
+
+function DataComponent({ dataType }: { dataType: 'cache' | 'no-cache' | 'polling' }) {
+  const config = createSWRInstance(dataType);
+
+  return (
+    <SWRConfig value={config}>
+      <DataDisplay />
+    </SWRConfig>
+  );
+}
+```
+
+### 3.5 组合使用多个实例
+
+```typescript
+import { SWRConfig } from 'swr';
+import { SWRInstances } from '@/lib/swr';
+
+function App() {
+  return (
+    <div>
+      {/* 缓存实例 - 用户信息 */}
+      <SWRConfig value={SWRInstances.cache}>
+        <UserProfile />
+      </SWRConfig>
+
+      {/* 实时实例 - 搜索结果 */}
+      <SWRConfig value={SWRInstances.realtime}>
+        <SearchResults />
+      </SWRConfig>
+
+      {/* 轮询实例 - 实时统计 */}
+      <SWRConfig value={SWRInstances.polling}>
+        <LiveStats />
+      </SWRConfig>
+    </div>
+  );
+}
+```
+
+## 4. 最佳实践
+
+### 4.1 选择合适的实例
+
+- **静态数据** → 使用 `swrCacheConfig`
+- **实时数据** → 使用 `swrNoCacheConfig`
+- **监控数据** → 使用 `swrPollingConfig`
+
+### 4.2 错误处理
+
+```typescript
+function DataComponent() {
+  const { data, error, isLoading } = useSWR('/api/data');
+
+  if (error) {
+    return (
+      <div className="error">
+        加载失败: {error.message}
+        <button onClick={() => mutate()}>重试</button>
+      </div>
+    );
+  }
+
+  return <div>{data}</div>;
+}
+```
+
+### 4.3 条件请求
+
+```typescript
+function UserProfile({ userId }) {
+  // 只有当 userId 存在时才发起请求
+  const { data, error, isLoading } = useSWR(
+    userId ? `/api/users/${userId}` : null
+  );
+
+  if (!userId) return <div>请选择用户</div>;
+
+  return <div>{data?.name}</div>;
+}
+```
+
+### 4.4 手动重新验证
+
+```typescript
+function DataComponent() {
+  const { data, mutate } = useSWR('/api/data');
+
+  const handleRefresh = () => {
+    mutate(); // 手动重新验证
+  };
+
+  return (
+    <div>
+      <button onClick={handleRefresh}>刷新数据</button>
+      <div>{data}</div>
+    </div>
+  );
+}
+```
+
+## 5. 性能优化
+
+### 5.1 请求去重
+
+SWR 自动处理相同请求的去重，避免重复请求。
+
+### 5.2 智能缓存
+
+SWR 会根据配置自动管理缓存，减少不必要的网络请求。
+
+### 5.3 错误重试
+
+配置合适的重试次数和间隔，提高请求成功率。
+
+## 6. 常见问题
+
+### 6.1 数据不更新
+
+检查配置中的 `revalidateOnFocus` 和 `revalidateIfStale` 设置。
+
+### 6.2 请求过于频繁
+
+调整 `dedupingInterval` 和 `focusThrottleInterval` 参数。
+
+### 6.3 内存泄漏
+
+确保在组件卸载时正确清理 SWR 缓存。
+
+## 7. 相关资源
+
+- [SWR 官方文档](https://swr.vercel.app/)
+- [SWR GitHub](https://github.com/vercel/swr)
+- [React Hooks 文档](https://react.dev/reference/react)

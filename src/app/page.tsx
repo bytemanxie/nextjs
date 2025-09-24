@@ -44,7 +44,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <Link href="/ssr">查看示例</Link>
+              <Link href="/ssr/ssr">查看示例</Link>
             </Button>
           </CardContent>
         </Card>
@@ -62,7 +62,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <Link href="/ssg">查看示例</Link>
+              <Link href="/ssg/ssg">查看示例</Link>
             </Button>
           </CardContent>
         </Card>
@@ -80,7 +80,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <Link href="/isr">查看示例</Link>
+              <Link href="/isr/isr">查看示例</Link>
             </Button>
           </CardContent>
         </Card>
@@ -95,7 +95,9 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <Link href="/client-server-test">查看示例</Link>
+              <Link href="/client-server-test/client-server-test">
+                查看示例
+              </Link>
             </Button>
           </CardContent>
         </Card>
@@ -113,7 +115,7 @@ export default function Home() {
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full">
-              <Link href="/github-auth">查看示例</Link>
+              <Link href="/github-auth/github-auth">查看示例</Link>
             </Button>
           </CardContent>
         </Card>
