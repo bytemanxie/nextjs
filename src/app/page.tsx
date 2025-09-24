@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, Zap, RefreshCw } from 'lucide-react';
+import { CheckCircle, Zap, RefreshCw, Github } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -96,6 +96,24 @@ export default function Home() {
           <CardContent>
             <Button asChild className="w-full">
               <Link href="/client-server-test">查看示例</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* GitHub OAuth 认证 */}
+        <Card className="hover:shadow-xl transition-shadow">
+          <CardHeader>
+            <div className="bg-gray-100 dark:bg-gray-800 w-12 h-12 rounded-lg flex items-center justify-center mb-4">
+              <Github className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            </div>
+            <CardTitle className="text-xl">GitHub OAuth 认证</CardTitle>
+            <CardDescription>
+              使用 NextAuth.js 实现 GitHub OAuth 登录功能
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <Link href="/github-auth">查看示例</Link>
             </Button>
           </CardContent>
         </Card>

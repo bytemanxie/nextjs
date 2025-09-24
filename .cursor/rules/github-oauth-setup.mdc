@@ -1,0 +1,226 @@
+# GitHub OAuth 配置指南
+
+本文档详细说明如何配置 GitHub OAuth 应用以使用 NextAuth.js 实现 GitHub 登录功能。
+
+## 1. 创建 GitHub OAuth 应用
+
+### 步骤一：访问 GitHub Settings
+
+1. 登录到你的 GitHub 账户
+2. 点击右上角头像，选择 **Settings**
+3. 在左侧菜单中找到 **Developer settings**
+4. 点击 **OAuth Apps**
+
+### 步骤二：创建新的 OAuth 应用
+
+1. 点击 **New OAuth App** 按钮
+2. 填写应用信息：
+   - **Application name**: `NextJS OAuth Demo` (或你喜欢的名称)
+   - **Homepage URL**: `http://localhost:3000`
+   - **Authorization callback URL**: `http://localhost:3000/api/auth/callback/github`
+
+### 步骤三：获取客户端凭证
+
+创建应用后，你会看到：
+
+- **Client ID**: 这是公开的标识符
+- **Client Secret**: 点击 **Generate a new client secret** 生成
+
+⚠️ **重要**: Client Secret 只会显示一次，请立即复制保存。
+
+## 2. 环境变量配置
+
+### 创建 `.env.local` 文件
+
+在项目根目录创建 `.env.local` 文件：
+
+```env
+# NextAuth.js 配置
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-nextauth-secret-key-here
+
+# GitHub OAuth 配置
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+```
+
+### 环境变量说明
+
+- **NEXTAUTH_URL**: 应用的基础 URL，生产环境需要改为实际域名
+- **NEXTAUTH_SECRET**: 用于加密 JWT 的密钥，可以使用 `openssl rand -base64 32` 生成
+- **GITHUB_CLIENT_ID**: 从 GitHub OAuth 应用获取的客户端 ID
+- **GITHUB_CLIENT_SECRET**: 从 GitHub OAuth 应用获取的客户端密钥
+
+## 3. 生产环境配置
+
+### 更新 GitHub OAuth 应用设置
+
+部署到生产环境时，需要更新 GitHub OAuth 应用的 URL：
+
+1. **Homepage URL**: `https://yourdomain.com`
+2. **Authorization callback URL**: `https://yourdomain.com/api/auth/callback/github`
+
+### 更新环境变量
+
+```env
+NEXTAUTH_URL=https://yourdomain.com
+NEXTAUTH_SECRET=your-production-secret-key
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+```
+
+## 4. 安全最佳实践
+
+### 密钥管理
+
+- 🔒 **永远不要**将 `.env.local` 文件提交到 git
+- 🔒 使用强随机密钥作为 `NEXTAUTH_SECRET`
+- 🔒 定期轮换生产环境的密钥
+- 🔒 使用环境变量管理工具（如 Vercel、Railway 等平台的环境变量设置）
+
+### 权限控制
+
+- 📝 GitHub OAuth 应用默认只请求基本的用户信息权限
+- 📝 如需要更多权限，可在 NextAuth 配置中添加 scope 参数
+- 📝 遵循最小权限原则，只请求必要的权限
+
+## 5. 故障排除
+
+### 常见问题
+
+**问题**: "Authorization callback URL mismatch"
+
+- **解决**: 确保 GitHub OAuth 应用的回调 URL 与 `NEXTAUTH_URL` 匹配
+
+**问题**: "Invalid client secret"
+
+- **解决**: 重新生成 Client Secret 并更新环境变量
+
+**问题**: "NEXTAUTH_SECRET missing"
+
+- **解决**: 确保在 `.env.local` 中设置了 `NEXTAUTH_SECRET`
+
+### 调试模式
+
+在开发环境中，可以启用 NextAuth 调试模式：
+
+```env
+NEXTAUTH_DEBUG=true
+```
+
+这会在控制台输出详细的调试信息。
+
+## 6. 技术架构
+
+### NextAuth.js 工作流程
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant App as Next.js 应用
+    participant GitHub as GitHub OAuth
+    participant NextAuth as NextAuth.js
+
+    User->>App: 点击登录
+    App->>NextAuth: signIn('github')
+    NextAuth->>GitHub: 重定向到授权页面
+    GitHub->>User: 显示授权确认
+    User->>GitHub: 确认授权
+    GitHub->>NextAuth: 返回授权码
+    NextAuth->>GitHub: 交换访问令牌
+    GitHub->>NextAuth: 返回访问令牌和用户信息
+    NextAuth->>App: 创建会话
+    App->>User: 登录成功，显示用户信息
+```
+
+### 文件结构
+
+```
+src/
+├── app/
+│   ├── api/auth/[...nextauth]/
+│   │   └── route.ts              # NextAuth API 路由
+│   └── auth/signin/
+│       └── page.tsx              # 自定义登录页面
+├── components/
+│   ├── Navigation.tsx            # 导航组件（包含登录状态）
+│   └── SessionProvider.tsx      # Session 上下文提供者
+├── features/auth/
+│   ├── SignInForm.tsx           # 登录表单组件
+│   ├── UserProfile.tsx          # 用户信息组件
+│   └── index.ts                 # 统一导出
+└── types/
+    └── next-auth.d.ts           # NextAuth 类型扩展
+```
+
+## 7. 扩展功能
+
+### 添加更多 OAuth 提供商
+
+NextAuth.js 支持多种 OAuth 提供商：
+
+```typescript
+import GoogleProvider from 'next-auth/providers/google';
+import DiscordProvider from 'next-auth/providers/discord';
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    DiscordProvider({
+      clientId: process.env.DISCORD_CLIENT_ID!,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET!,
+    }),
+  ],
+  // ...其他配置
+};
+```
+
+### 数据库集成
+
+可以集成数据库来持久化用户信息：
+
+```typescript
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from '@/lib/prisma';
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  // ...其他配置
+};
+```
+
+### 角色和权限管理
+
+通过回调函数实现角色管理：
+
+```typescript
+export const authOptions: NextAuthOptions = {
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.role = token.role;
+      return session;
+    },
+  },
+  // ...其他配置
+};
+```
+
+## 8. 相关资源
+
+- [NextAuth.js 官方文档](https://next-auth.js.org/)
+- [GitHub OAuth Apps 文档](https://docs.github.com/en/apps/oauth-apps)
+- [Next.js 认证指南](https://nextjs.org/docs/pages/building-your-application/authenticating)
+- [OAuth 2.0 规范](https://tools.ietf.org/html/rfc6749)
